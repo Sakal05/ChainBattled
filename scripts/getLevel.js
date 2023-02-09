@@ -16,8 +16,8 @@ async function main() {
 
 
     try {
-        await contract.train("1");
-
+        const level = await contract.getLevels("1");
+        console.log("Token Level is ", level);
         console.log("train successfully");
     }
     catch (err) {

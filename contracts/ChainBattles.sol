@@ -11,7 +11,16 @@ contract ChainBottles is ERC721URIStorage {
     using Strings for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    mapping(uint256 => uint256) public tokenIdToLevels;
+
+    struct tokenInfo {
+        uint256 level;
+        uint256 speed;
+        uint256 strength;
+        uint256 life;
+    }
+
+    mapping(uint256 => tokenInfo) public tokenIdToLevels;
+    tokenInfo token;
 
     constructor() ERC721("Chain Bottles", "CBTLS") {}
 
@@ -20,12 +29,24 @@ contract ChainBottles is ERC721URIStorage {
             '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
             "<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>",
             '<rect width="100%" height="100%" fill="black" />',
-            '<text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            '<text x="50%" y="90%" class="base" dominant-baseline="middle" text-anchor="middle">',
             "Warrior",
             "</text>",
             '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">',
             "Levels: ",
             getLevels(tokenId),
+            "</text>",
+            '<text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            "Speed: ",
+            getSpeed(tokenId),
+            "</text>",
+            '<text x="50%" y="30%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            "Strength: ",
+            getStrength(tokenId),
+            "</text>",
+            '<text x="50%" y="20%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            "Life Span: ",
+            getLife(tokenId),
             "</text>",
             "</svg>"
         );
@@ -40,9 +61,25 @@ contract ChainBottles is ERC721URIStorage {
 
     //function to get level of the NFT
     function getLevels(uint256 tokenId) public view returns (string memory) {
-        uint256 levels = tokenIdToLevels[tokenId];
+        uint256 levels = tokenIdToLevels[tokenId].level;
         return levels.toString();
     }
+
+    function getSpeed(uint256 tokenId) public view returns (string memory) {
+        uint256 speed = tokenIdToLevels[tokenId].speed;
+        return speed.toString();
+    }
+
+    function getStrength(uint256 tokenId) public view returns (string memory) {
+        uint256 strength = tokenIdToLevels[tokenId].strength;
+        return strength.toString();
+    }
+
+    function getLife(uint256 tokenId) public view returns (string memory) {
+        uint256 life = tokenIdToLevels[tokenId].life;
+        return life.toString();
+    }
+
 
     //function to genereate tokenURI
     function getTokenURI(uint256 tokenId) public returns (string memory) {
@@ -71,7 +108,10 @@ contract ChainBottles is ERC721URIStorage {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _safeMint(msg.sender, newItemId); // msg.sender: sender of the message (current call)
-        tokenIdToLevels[newItemId] = 0;
+        //declare default value of token struct
+        tokenInfo memory token1 = tokenInfo(0, 0, 0, 10);
+
+        tokenIdToLevels[newItemId] = token1;
         _setTokenURI(newItemId, getTokenURI(newItemId));
     }
 
@@ -81,10 +121,13 @@ contract ChainBottles is ERC721URIStorage {
             ownerOf(tokenId) == msg.sender,
             "You must be the owner of the token to train it"
         );
-        uint256 currentLevel = tokenIdToLevels[tokenId];
-        tokenIdToLevels[tokenId] = currentLevel + 1;
+        token = tokenIdToLevels[tokenId];
+        tokenIdToLevels[tokenId] = tokenInfo(
+            token.level += 1,
+            token.speed += 50,
+            token.strength += 200,
+            token.life += 1
+        );
         _setTokenURI(tokenId, getTokenURI(tokenId));
     }
-
-
 }

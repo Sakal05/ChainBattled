@@ -27,24 +27,33 @@ contract ChainBottles is ERC721URIStorage {
     function generateCharacter(uint256 tokenId) public returns (string memory) {
         bytes memory svg = abi.encodePacked(
             '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
-            "<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>",
-            '<rect width="100%" height="100%" fill="black" />',
-            '<text x="50%" y="90%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            "<style>",
+            ".base { fill: white; font-family: 'Open Sans', sans-serif; font-size: 20px; font-weight: 500 }",
+            "rect { fill: url(#gradient); }",
+            "</style>",
+            "<defs>",
+            '<linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">',
+            '<stop offset="0%" stop-color="#5F0A87"/>',
+            '<stop offset="100%" stop-color="#A4508B"/>',
+            "</linearGradient>",
+            "</defs>",
+            '<rect width="100%" height="100%" />',
+            '<text x="50%" y="80%" class="base" dominant-baseline="middle" text-anchor="middle">',
             "Warrior",
             "</text>",
-            '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            '<text x="50%" y="55%" class="base" dominant-baseline="middle" text-anchor="middle">',
             "Levels: ",
             getLevels(tokenId),
             "</text>",
-            '<text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            '<text x="50%" y="45%" class="base" dominant-baseline="middle" text-anchor="middle">',
             "Speed: ",
             getSpeed(tokenId),
             "</text>",
-            '<text x="50%" y="30%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            '<text x="50%" y="35%" class="base" dominant-baseline="middle" text-anchor="middle">',
             "Strength: ",
             getStrength(tokenId),
             "</text>",
-            '<text x="50%" y="20%" class="base" dominant-baseline="middle" text-anchor="middle">',
+            '<text x="50%" y="25%" class="base" dominant-baseline="middle" text-anchor="middle">',
             "Life Span: ",
             getLife(tokenId),
             "</text>",
@@ -79,7 +88,6 @@ contract ChainBottles is ERC721URIStorage {
         uint256 life = tokenIdToLevels[tokenId].life;
         return life.toString();
     }
-
 
     //function to genereate tokenURI
     function getTokenURI(uint256 tokenId) public returns (string memory) {
